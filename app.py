@@ -174,58 +174,9 @@ elif app_mode == "Training":
                     st.subheader("Training History")
                     st.line_chart(metrics['history']['accuracy'])
 
-                # --- Export Section ---
-                st.divider()
-                st.subheader("Export Model")
-                
-                # 1. Download Model
-                with open(model_path, "rb") as f:
-                    st.download_button(
-                        label=f"Download {model_type} Model",
-                        data=f,
-                        file_name=os.path.basename(model_path),
-                        mime="application/octet-stream"
-                    )
-
-                # 2. Generate Code Snippet
-                st.subheader("Use in Python")
-                code_snippet = f"""
-import joblib
-import numpy as np
-from PIL import Image
-import tensorflow as tf # If using CNN
-
-# 1. Load Model
-model_data = joblib.load("{os.path.basename(model_path)}")
-model = model_data['model']
-classes = model_data['classes']
-
-# 2. Load Image
-image_path = "your_image.jpg"
-img = Image.open(image_path).convert('RGB')
-img = img.resize((128, 128))
-img_array = np.array(img)
-
-# 3. Predict
-# Ensure batch dimension
-if len(img_array.shape) == 3:
-    img_array = np.expand_dims(img_array, axis=0)
-
-# Preprocess (if CNN)
-img_array = img_array.astype('float32')
-# If using MobileNetV2 directly, you might need: 
-# img_array = (img_array / 127.5) - 1 
-# But our saved model includes the Rescaling layer!
-
-prediction = model.predict(img_array)
-if isinstance(prediction, list): # Sklearn returns class labels directly sometimes
-    print(prediction)
-else:
-    # Deep Learning / Probabilities
-    idx = np.argmax(prediction[0])
-    print(f"Class: {{classes[idx]}}")
-"""
-                st.code(code_snippet, language="python")
+                if 'history' in metrics:
+                    st.subheader("Training History")
+                    st.line_chart(metrics['history']['accuracy'])
 
 elif app_mode == "Inference":
     st.title("3. Inference")
