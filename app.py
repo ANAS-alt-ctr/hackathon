@@ -1,7 +1,8 @@
 import streamlit as st
 import os
-# Set env var before importing tensorflow
+# Set env vars before importing tensorflow
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
 import numpy as np
 from PIL import Image
